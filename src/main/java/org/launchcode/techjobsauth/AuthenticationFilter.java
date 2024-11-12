@@ -28,22 +28,24 @@ public class AuthenticationFilter implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws IOException {
 
-        if (isWhiteListed(request.getRequestURI())) {
+        if (isWhitelisted(request.getRequestURI())) {
             return true;
         }
 
         HttpSession session = request.getSession();
         User user = authenticationController.getUserFromSession(session);
 
+        //if logged in
         if (user != null) {
             return true;
         }
 
+        //no user logged in
         response.sendRedirect("/login");
         return false;
     }
 
-    private static boolean isWhiteListed(String path) {
+    private static boolean isWhitelisted(String path) {
         for (String pathRoot : whitelist) {
             if (path.startsWith(pathRoot)) {
                 return true;
